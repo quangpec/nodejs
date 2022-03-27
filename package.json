@@ -1,0 +1,20 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "lab 1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quangpec/nodejs.git"
+  },
+  "author": "quang la",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quangpec/nodejs/issues"
+  },
+  "homepage": "https://github.com/quangpec/nodejs#readme"
+}
