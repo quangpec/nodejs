@@ -10,7 +10,7 @@ app.use((req,res,next) =>{
 });
 app.use((req,res,next) =>{
     console.log('in another middelware!');
-    //...
+    res.send('<h1> Hello from next.js!</h1>');
    });
 const server = http.createServer(app);
 //console.log(routes.somtext);
