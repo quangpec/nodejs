@@ -1,31 +1,16 @@
 const http = require('http');
 const bodyParser = require('body-parser');
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 //const routes = require('./routes');
 
 const express = require('express');
-
 const app = express();
-
 app.use(bodyParser.urlencoded({extended: false}));
-app.use('/',(req,res,next) =>{
- console.log('This always runs!');
- next();// tiếp tục các middelware khác
-});
-app.use('/add-product',(req,res,next) =>{
-    res.send('<form action = "/product" method ="POST"><input type ="text" name ="title"></input> <br> <input type ="text" name ="id"></input> <button type ="submit" >Add Product</button></form>');
-    console.log('in another middelware!');
-   
-   });
-app.post('/product',(req,res,next)=>{
- console.log(req.body);
- res.redirect('/');
-})
-app.use('/',(req,res,next)=>{
-    
-    console.log('in another middelware!');
-    res.send('<h1> Hello from next.js!</h1>');
+app.use(adminRoutes);
+app.use(shopRoutes);
 
-})
+
 const server = http.createServer(app);
 //console.log(routes.somtext);
 server.listen(3000);
