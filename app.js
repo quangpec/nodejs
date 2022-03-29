@@ -15,7 +15,7 @@ app.use('/admin',adminData.router);
 app.use(shopRoutes);
 app.use('/404',(req,res,next)=>{
     //console.log(path.join(__dirname,'views','404.html'));
-    res.status(404).sendFile(path.join(__dirname,'views','404.html'));
+    res.status(404).render('404',{errors: 'errors 404'});
  })
 app.use((req,res,next)=>{
     res.redirect('/404');
