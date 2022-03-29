@@ -8,13 +8,13 @@ const router = express.Router();
 const product = [];
 // /admin/add-product => GET
 router.get('/add-product', (req, res, next) => {
-  res.render('add-product',{title: 'Add product'})
+  res.render('add-product',{pageTitle: 'Add product', path:'/admin/add-product'})
 });
 
 // /admin/add-product => POST
 router.post('/add-product', (req, res, next) => {
   product.push({title: req.body.title});
-  res.redirect('/admin/add-product');
+  res.redirect('/');
 });
 
 module.exports.product = product;
