@@ -4,12 +4,13 @@ const bodyParser = require('body-parser');
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 //const routes = require('./routes');
-
+const expressHbs = require('express-handlebars');
 const express = require('express');
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname,'public')));
-app.set('view engine', 'pug');
+app.engine('hbs',expressHbs());
+app.set('view engine', 'hbs');
 app.set('views', 'views');
 app.use('/admin',adminData.router);
 app.use(shopRoutes);
