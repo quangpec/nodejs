@@ -9,7 +9,12 @@ const express = require('express');
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname,'public')));
-app.engine('hbs',expressHbs());
+app.engine('hbs',
+expressHbs({
+        layoutsDir: 'views/layouts/',
+        defaultLayout: 'main-layout',
+        extname: 'hbs'
+      }));
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 app.use('/admin',adminData.router);
