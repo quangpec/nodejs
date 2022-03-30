@@ -1,24 +1,11 @@
-// const path = require('path');
-// const express = require('express');
-// const router = express.Router();
-
-// router.get('/',(req,res,next)=>{
-//     console.log('in another middelware!');
-//     res.sendFile(path.join(__dirname,'../','views','shop.html'));
-// });
-
-// module.exports = router;
-
-
 const path = require('path');
-const rootDir = require('../util/path');
+
 const express = require('express');
-const adminData = require('./admin');
+
+const productsController = require('../controllers/products');
+
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  console.log(adminData.product);
-  const products = adminData.product;
-  res.render('shop',{prods: products, pageTitle: 'Shop', path :'/', hasProducts: products.length>0, productCSS: true,activeShop : true });
-})
+router.get('/', productsController.getProducts);
+
 module.exports = router;

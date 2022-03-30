@@ -1,7 +1,7 @@
 const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
-const adminData = require('./routes/admin');
+const adminRoutes= require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 //const routes = require('./routes');
 const express = require('express');
@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname,'public')));
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-app.use('/admin',adminData.router);
+app.use('/admin',adminRoutes);
 app.use(shopRoutes);
 app.use('/404',(req,res,next)=>{
     //console.log(path.join(__dirname,'views','404.html'));
