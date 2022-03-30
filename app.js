@@ -22,4 +22,4 @@ app.use((req,res,next)=>{
 
 const server = http.createServer(app);
 //console.log(routes.somtext);
-server.listen(3000);
+server.listen(3001);
