@@ -38,4 +38,10 @@ module.exports = class Product {
   static fetchAll(cb) {
     getProductsFromFile(cb);
   }
-};
+  static fetchProductId(id,cb){
+    getProductsFromFile(products=>{
+      const product = products.filter(products=>products.id ===id);
+      cb(product);
+    });
+  }
+}
