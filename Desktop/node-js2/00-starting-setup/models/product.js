@@ -44,4 +44,18 @@ module.exports = class Product {
         cb(product);
     });
   }
+  static editProduct(id,product,delProduct){
+      getProductsFromFile(products=>{
+        const proIndex = products.findIndex(p=>p.id === id);
+        if (!delProduct){
+        products[proIndex] = product;
+        }else{
+          products[proIndex] = [];
+        }
+        fs.writeFile(p, JSON.stringify(products), err => {
+          console.log(err);
+        });
+      });  
+  }
+
 }

@@ -18,9 +18,23 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect('/');
 };
 exports.postEditProduct=(req,res,next)=>{
- res.redirect('/');
-}
+  const product = {
+    id: req.body.id,
+    title : req.body.title,
+    imageUrl: req.body.imageUrl,
+    price: req.body.price,
+    description: req.body.description,
+  }
+  delProduct = false;
+  Product.editProduct(product.id, product, false);
+ res.redirect('/admin/products');
 
+}
+exports.postdeleteProduct=(req,res,next)=>{
+  const id = req.body.id;
+  Product.editProduct(id,[], true);
+  res.redirect('/admin/products');
+}
 exports.getEditProduct =(req,res,next)=>{
 const editMode = req.query.edit;
 if(!editMode){
