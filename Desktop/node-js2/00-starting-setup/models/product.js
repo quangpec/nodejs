@@ -50,7 +50,8 @@ module.exports = class Product {
         if (!delProduct){
         products[proIndex] = product;
         }else{
-          products[proIndex] = [];
+          products.splice(proIndex,1);
+          
         }
         fs.writeFile(p, JSON.stringify(products), err => {
           console.log(err);
