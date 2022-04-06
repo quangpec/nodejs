@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const Card = require('../models/card');
 
 const p = path.join(
   path.dirname(process.mainModule.filename),
@@ -55,6 +56,9 @@ module.exports = class Product {
         }
         fs.writeFile(p, JSON.stringify(products), err => {
           console.log(err);
+          if(!err){
+            Card.deleteProduct(id);
+          }
         });
       });  
   }
