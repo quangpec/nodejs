@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const Card = require('../models/card');
+const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) => {
@@ -10,21 +10,20 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
-exports.getProduct =(req,res,next)=>{
-   const productId =req.params.productId;
-   Product.fetchProductId(productId,product =>{
-    if(product){
-    res.render('shop/product-detail', {
-    product: product,
-    pageTitle: product.title,
-    path: '/product'
+exports.getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  Product.fetchProductId(productId, product => {
+    if (product) {
+      res.render('shop/product-detail', {
+        product: product,
+        pageTitle: product.title,
+        path: '/product'
+      });
+    } else {
+      res.status(404).render('404', { pageTitle: 'Page Not Found', path: '/404' });
+    }
   });
-  } else{
-    res.status(404).render('404', { pageTitle: 'Page Not Found', path: '/404' });
-  }
-   });
-   //console.log(productId);
-   //res.redirect('/');
+  //res.redirect('/');
 }
 
 exports.getIndex = (req, res, next) => {
@@ -38,19 +37,31 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart'
-  });
+  Cart.fetchAll(cart => {
+    Product.fetchAll(products => {
+      const cartProduct = [];
+      for (let product of products) {
+        const cartProductdata = cart.product.find(prod => prod.id === product.id);
+        if (cartProductdata) {
+          cartProduct.push({ product: product, qty: cartProductdata.qty });
+        }
+      }
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products: cartProduct,
+        totalPrice: cart.totalprice,
+      });
+    })
+  })
+
 };
-exports.postCart=(req,res,next)=>{
- const id = req.body.id;
- console.log(id);
-  Product.fetchProductId(id, (product) =>{
-    console.log(product);
-   Card.addTocard(id,product.price);
- })
-  res.redirect('/card');
+exports.postCart = (req, res, next) => {
+  const id = req.body.id;
+  Product.fetchProductId(id, (product) => {
+    Cart.addTocart(id, product.price);
+  })
+  res.redirect('/cart');
 }
 
 exports.getOrders = (req, res, next) => {

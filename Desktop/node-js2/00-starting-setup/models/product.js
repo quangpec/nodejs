@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const Card = require('../models/card');
+const Cart = require('./cart');
 
 const p = path.join(
   path.dirname(process.mainModule.filename),
   'data',
   'products.json'
 );
-
+//let allProducts = [];
 const getProductsFromFile = cb => {
   fs.readFile(p, (err, fileContent) => {
     if (err) {
@@ -25,6 +25,7 @@ module.exports = class Product {
     this.description = description;
     this.price = price;
   }
+  
 
   save() {
     this.id = Math.random().toString();
@@ -37,7 +38,7 @@ module.exports = class Product {
   }
 
   static fetchAll(cb) {
-    getProductsFromFile(cb);  
+    getProductsFromFile(cb);
   }
   static fetchProductId(id,cb){
     getProductsFromFile(products=>{
@@ -57,7 +58,7 @@ module.exports = class Product {
         fs.writeFile(p, JSON.stringify(products), err => {
           console.log(err);
           if(!err){
-            Card.deleteProduct(id);
+            Cart.deleteProduct(id);
           }
         });
       });  
