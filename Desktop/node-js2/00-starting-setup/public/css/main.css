@@ -176,7 +176,8 @@ form {
 
 .card__actions button,
 .card__actions a {
-  margin: 0 0.25rem;
+  margin: 1rem;
+  text-align: center;
 }
 
 .btn {

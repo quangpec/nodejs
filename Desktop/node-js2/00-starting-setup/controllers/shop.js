@@ -61,7 +61,7 @@ exports.postCart = (req, res, next) => {
   Product.fetchProductId(id, (product) => {
     Cart.addTocart(id, product.price);
   })
-  res.redirect('/cart');
+  res.redirect('/');
 }
 
 exports.getOrders = (req, res, next) => {
@@ -77,3 +77,8 @@ exports.getCheckout = (req, res, next) => {
     pageTitle: 'Checkout'
   });
 };
+exports.PostdeleteCartItem = (req, res, next) => {
+   const id = req.body.id;
+   Cart.delete(id);
+  res.redirect('/cart');
+}

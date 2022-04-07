@@ -8,16 +8,20 @@
             %>
             <h1>No products in your cart!</h1>
         <%} else{
-            console.log(products);
             %>
             <ul>
                 <% products.forEach(p=>{ %>
                     <li>
-                        <%=p.product.title %>(<%=p.qty%>) %>
+                        <p><%=p.product.title %>(<%=p.qty%>) %></p>
+                        <form action="./cart-delete-item" method="POST" >
+                            <input type="hidden" name ="id" value= <%=p.product.id%> />
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
                     </li>
 
                <% }) %>
             </ul>
+            <h1> Total Price: <%=totalPrice %></h1>
             <%}%>
     </main>
         <%- include('../includes/end.ejs') %>
