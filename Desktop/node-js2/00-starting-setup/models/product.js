@@ -58,7 +58,7 @@ module.exports = class Product {
         fs.writeFile(p, JSON.stringify(products), err => {
           console.log(err);
           if(!err){
-            Cart.deleteProduct(id);
+            Cart.delete(id);
           }
         });
       });  
