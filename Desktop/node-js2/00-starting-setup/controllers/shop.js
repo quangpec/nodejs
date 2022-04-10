@@ -17,16 +17,17 @@ exports.getProducts = (req, res, next) => {
  
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.fetchProductId(productId, product => {
-    if (product) {
-      res.render('shop/product-detail', {
-        product: product,
-        pageTitle: product.title,
-        path: '/product'
-      });
-    } else {
-      res.status(404).render('404', { pageTitle: 'Page Not Found', path: '/404' });
-    }
+  Product.findById(productId).then( ([rowId, fieldData])=>{
+    console.log(rowId);
+    res.render('shop/product-detail', {
+      product: rowId[0],
+      pageTitle: rowId[0].title,
+      path: '/product'
+    });
+  }
+
+  ).catch(err => {
+    console.log(err);
   });
   //res.redirect('/');
 }
