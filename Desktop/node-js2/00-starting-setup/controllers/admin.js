@@ -57,11 +57,15 @@ Product.fetchProductId(productId, product =>{
 }
 
 exports.getProducts = (req, res, next) => {
-   Product.fetchAll(products => {
+  Product.fetchAll()
+  .then(([row, fieldData])=>{
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
-   });
+  })
+  .catch(err => {
+    console.log(err);
+  })
 };
