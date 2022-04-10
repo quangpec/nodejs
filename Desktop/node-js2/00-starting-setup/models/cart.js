@@ -41,27 +41,6 @@ module.exports = class Cart {
                 console.log(err);
         })
     }
-    static deleteProduct(id) {
-        fs.readFile(p, (err, fileConten) => {
-            if (!err) {
-                const Cart = JSON.parse(fileConten);
-                const cartIndex = Cart.product.findIndex(pr => pr.id === id);
-                if (cartIndex.length === 0) {
-                    return;
-                } else {
-                    const productDel = Cart.product[cartIndex];
-                    Cart.totalprice = Cart.totalprice - productDel.price * productDel.qty;
-                    Cart.product.splice(cartIndex, 1);
-                    fs.writeFile(p, JSON.stringify(Cart), err => {
-
-                    })
-                }
-            }
-            else {
-
-            }
-        })
-    }
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
@@ -80,7 +59,6 @@ module.exports = class Cart {
                 console.log('lỗi');
             }
         }
-
         );
     }
 }
