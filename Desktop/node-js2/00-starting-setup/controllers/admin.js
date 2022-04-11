@@ -46,8 +46,12 @@ exports.postEditProduct = (req, res, next) => {
 }
 exports.postdeleteProduct = (req, res, next) => {
   const id = req.body.id;
-  Product.editProduct(id, [], true);
-  res.redirect('/admin/products');
+  Product.findByPk(id).then(product=>{
+    return product.destroy();
+  }).then(result => {
+    console.log('DELETE PRODUCT');
+    res.redirect('/admin/products');
+  }).catch(err => console.log(err));
 }
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
