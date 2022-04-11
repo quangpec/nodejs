@@ -17,13 +17,17 @@ exports.getProducts = (req, res, next) => {
  
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findById(productId).then( ([rowId, fieldData])=>{
-    console.log(rowId);
+  Product.findById(productId).then( ([rowId])=>{
+    if(rowId.length>0){
     res.render('shop/product-detail', {
       product: rowId[0],
       pageTitle: rowId[0].title,
       path: '/product'
     });
+  }
+  else{
+    next();
+  }
   }
 
   ).catch(err => {

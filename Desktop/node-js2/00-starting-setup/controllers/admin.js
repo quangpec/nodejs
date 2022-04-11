@@ -63,7 +63,7 @@ exports.getProducts = (req, res, next) => {
   Product.fetchAll()
   .then(([row, fieldData])=>{
     res.render('admin/products', {
-      prods: products,
+      prods: row,
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
