@@ -12,16 +12,15 @@
             <ul>
                 <% products.forEach(p=>{ %>
                     <li>
-                        <p><%=p.product.title %>(<%=p.qty%>) %></p>
+                        <p><%=p.title %>(<%=p.cartItem.quantity%>) %></p>
                         <form action="./cart-delete-item" method="POST" >
-                            <input type="hidden" name ="id" value= <%=p.product.id%> />
+                            <input type="hidden" name ="id" value= <%=p.id%> />
                             <button class="btn" type="submit">Delete</button>
                         </form>
                     </li>
 
                <% }) %>
             </ul>
-            <h1> Total Price: <%=totalPrice %></h1>
             <%}%>
     </main>
         <%- include('../includes/end.ejs') %>
