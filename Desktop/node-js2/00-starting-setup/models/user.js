@@ -15,7 +15,7 @@ class User {
     return db.collection('users').insertOne(this);
   }
   addTocart(idProduct){
-    const updateCart = {items:[{productId:idProduct,quantity: 1}]};
+    const updateCart = {items:[{productId: new ObjectId(idProduct),quantity: 1}]};
 
     const db = getDb();
     return db
