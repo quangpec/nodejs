@@ -80,3 +80,12 @@ exports.postEditProduct = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+exports.postdeleteProduct= (req,res, next)=>{
+  const id = req.body.productId;
+  Product.deleteById(id).then(() =>{
+    console.log('DELETE');
+    res.redirect('/admin/products')
+  })
+  .catch(err => console.log(err))
+
+}
