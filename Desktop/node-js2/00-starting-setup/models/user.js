@@ -15,14 +15,25 @@ class User {
     return db.collection('users').insertOne(this);
   }
   addTocart(idProduct){
-    const updateCart = {items:[{productId: new ObjectId(idProduct),quantity: 1}]};
+    const updatedCartItems = [...this.cart];
+    const  itemsIndex = this.cart.findIndex(item =>item.productId.toString() === idProduct)
+    if (itemsIndex>=0){
+      updatedCartItems[itemsIndex].quantity = updatedCartItems[itemsIndex].quantity+1;
+    }
+    else{
+      updatedCartItems.push({
+        productId: new ObjectId(idProduct),
+        quantity: 1
+      });
+    }
+    //const updateCart = {items:[{productId: new ObjectId(idProduct),quantity: 1}]};
 
     const db = getDb();
     return db
     .collection('users')
     .updateOne(
       { _id: new ObjectId(this._id) },
-      { $set: { cart: updateCart } }
+      { $set: { cart: updatedCartItems } }
     );
 
   }
