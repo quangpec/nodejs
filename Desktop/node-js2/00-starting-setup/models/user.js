@@ -10,13 +10,21 @@ class User {
     this.cart = cart; // {items: []}
     this._id = id;
   }
-
   save() {
     const db = getDb();
     return db.collection('users').insertOne(this);
   }
-  addToCart(product){
-    const updateCard = {...}
+  addTocart(idProduct){
+    const updateCart = {items:[{productId:idProduct,quantity: 1}]};
+
+    const db = getDb();
+    return db
+    .collection('users')
+    .updateOne(
+      { _id: new ObjectId(this._id) },
+      { $set: { cart: updateCart } }
+    );
+
   }
 
   static findById(userId) {
