@@ -65,29 +65,22 @@ exports.postCart = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user.getCart()
-      .then(products => {
-        console.log('CHECK',products);
-        res.render('shop/cart', {
-          path: '/cart',
-          pageTitle: 'Your Cart',
-          products: products
-        });
-      })
-      .catch(err => console.log(err));
+    .then(products => {
+      console.log('CHECK', products);
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products: products
+      });
+    })
+    .catch(err => console.log(err));
 
-  }
+}
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  req.user
-    .getCart()
-    .then(cart => {
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then(products => {
-      const product = products[0];
-      return product.cartItem.destroy();
-    })
+    console.log('check',prodId)
+  req.user.deleteById(prodId)
     .then(result => {
       res.redirect('/cart');
     })
@@ -125,7 +118,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
+  req.users
     .getOrders({ include: ['products'] })
     .then(orders => {
       res.render('shop/orders', {
