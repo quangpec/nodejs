@@ -25,8 +25,9 @@ exports.getProduct = (req, res, next) => {
   //     });
   //   })
   //   .catch(err => console.log(err));
-  Product.find({'_id':prodId})
-    .then(product => {
+  Product.find({'_id':prodId}) // findById(prodId)
+    .then(products => {
+      const product = products[0];
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.title,
