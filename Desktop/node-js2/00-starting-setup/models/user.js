@@ -13,6 +13,7 @@ const userSchema = new Schema({
     items:[{
       productID: {
         type: Schema.Types.ObjectId,
+        ref: 'Products',
         required: true
 
       },
@@ -21,10 +22,8 @@ const userSchema = new Schema({
         required: true
       }
 
-
-
   }]
-}
+  },
 })
 module.exports =  mongoose.model('Users',userSchema);
 // const mongodb = require('mongodb');
