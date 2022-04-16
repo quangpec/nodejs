@@ -55,8 +55,7 @@ exports.getIndex = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.id;
-  console.log(prodId);
-  req.user.addTocart(prodId).then(result => {
+  req.user.addToCart(prodId).then(result => {
     console.log(result);
     res.redirect('./cart')
   })
