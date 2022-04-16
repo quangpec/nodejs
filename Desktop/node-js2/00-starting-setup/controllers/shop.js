@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-
+const Oders = require('../models/order');
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
@@ -81,8 +81,8 @@ exports.getCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-    console.log('check',prodId)
-  req.user.deleteById(prodId)
+
+  req.user.deleteCartItem(prodId)
     .then(result => {
       res.redirect('/cart');
     })
