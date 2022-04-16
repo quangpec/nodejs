@@ -42,6 +42,7 @@ userSchema.methods.addToCart = function(idProduct){
     return this.save();
    
 }
+
 module.exports =  mongoose.model('Users',userSchema);
 // const mongodb = require('mongodb');
 // const getDb = require('../util/database').getDb;
