@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Oders = require('../models/order');
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
