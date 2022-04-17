@@ -71,6 +71,12 @@ userSchema.methods.deleteCart = function(){
   this.cart.items =[];
   return this.save();
 }
+userSchema.methods.getOrders = function(){
+  const userId = this._id; 
+  return Oders
+          .find({'user.userId':userId})
+            .then(orders => {return orders})
+}
 module.exports =  mongoose.model('Users',userSchema);
 // const mongodb = require('mongodb');
 // const getDb = require('../util/database').getDb;
