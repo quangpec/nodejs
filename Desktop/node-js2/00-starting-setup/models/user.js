@@ -52,19 +52,24 @@ userSchema.methods.deleteCartItem = function(productId){
 userSchema.methods.addOrder = function(){
 return this.populate('cart.items.productID').then(user => {
   return user.cart.items.map(i => {
-    return{quantily: i.quantily, product: i.productID}
+    return{quantily: i.quantily, product: {...i.productID._doc }}
 })
 }).then(products => {
-  console.log(products);
   const order = new Oders({
     user: {
       name: this.name,
       userId: this._id
     },
     products: products
-   }) 
+   })
   return order.save();
+}).then(result =>{
+  return this.deleteCart();
 })
+}
+userSchema.methods.deleteCart = function(){
+  this.cart.items =[];
+  return this.save();
 }
 module.exports =  mongoose.model('Users',userSchema);
 // const mongodb = require('mongodb');
