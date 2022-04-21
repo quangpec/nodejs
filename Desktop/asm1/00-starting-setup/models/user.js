@@ -1,81 +1,147 @@
 const mongoose = require('mongoose');
-const Oders = require('../models/order');
+const Covid = require('../models/covid');
+const Schedule = require('../models/schedule');
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   name: {
     type: String,
     required:true
   },
-  email: {
+  doB: {
+    type: Date,
+    required: true
+  },
+  salaryScale:{
+    type: Number,
+    required: true
+  },
+  startDate:{
+    type: Date,
+    required: true
+  },
+  department:{
     type: String,
     required: true
   },
-  cart: {
-    items:[{
-      productID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Products',
-        required: true
+  annualLeave:{
+    type: Number,
+    required: true
+  },
+  avatar: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: Boolean,
+    required: true
+  }
+})
+userSchema.methods.getCovid = function(product) {
+return Covid
+ .find({'userId':this._id})
+ .populate('userId','name avatar')
+ .then( covid =>{
+   if (covid.length===0)
+   {
+    const userCovid = new Covid({
+      userId: this._id,
+      vaccine: [],
+      thanNhiet: [],
+      duongTinh: 'Âm tính'
+    })
+    userCovid.save();
+    return userCovid;
+   }
+   else{
+     return covid[0];
+    };
+   
+ })
+}
+userSchema.methods.updateAvt = function(avt){
+ this.avatar = avt;
+ return this.save();
+}
+userSchema.methods.kbtn = function(nhietdo){
+ return  Covid.findOne({'userId':this._id})
+  .then( covid =>{
+    const thanNhiet = covid.thanNhiet;
+    thanNhiet.push({
+      nhietDo: nhietdo,
+      time: new Date()
+    })
+    covid.thanNhiet= thanNhiet;
+    return covid.save();
+  })
+}
+userSchema.methods.duongTinh= function(){
+  return  Covid.findOne({'userId':this._id})
+  .then( covid =>{
+    if(covid.duongTinh==='Âm tính'){
+      covid.duongTinh='Dương tính';
+    }else{
+      covid.duongTinh='Âm tính';
+    }
+    return covid.save();
+  })
+}
+userSchema.methods.addMuitiem = function(ngaytiem,loaiVaccine){
+  return  Covid.findOne({'userId':this._id})
+  .then( covid =>{
+    const vaccine = covid.vaccine;
+    vaccine.push({
+      ngaytiem:ngaytiem,
+      loaiVaccine:loaiVaccine
+    })
+    covid.vaccine = vaccine;
+    return covid.save();
+  })
 
-      },
-      quantily: {
-        type: Number,
-        required: true
+}
+userSchema.methods.checkIn = function(workPlaceUser){
+return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+      if (scheduleUser===null){
+        scheduleUser = new Schedule({
+          userId: this._id,
+          time: [],
+          nghiPhep: [],
+        })
       }
 
-  }]
-  },
-})
-userSchema.methods.addToCart = function(idProduct){
-  const updatedCartItems = this.cart.items;
-  const  itemsIndex = updatedCartItems.findIndex(item =>item.productID.toString() === idProduct);
-    console.log(itemsIndex);
-    if (itemsIndex>=0){
-      updatedCartItems[itemsIndex].quantily = updatedCartItems[itemsIndex].quantily+1;
+      if (this.status ===false){
+      const time = scheduleUser.time;
+      time.push({
+        timeStart: new Date(),
+        workPlace: workPlaceUser,
+        timeEnd:null,
+      })
+      scheduleUser.time = time; 
+    } else{
+      scheduleUser.time[scheduleUser.time.length-1].timeEnd = new Date();
     }
-    else{
-      updatedCartItems.push({
-        productID: idProduct,
-        quantily: 1
-      });
+    this.status = !this.status;
+    this.save();
+    return scheduleUser.save();
+})
+}
+userSchema.methods.getCheckin = function(){
+ return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+    if(scheduleUser ===null){
+      return null;
     }
-    this.cart.items = updatedCartItems;
-    return this.save();
-   
-}
-userSchema.methods.deleteCartItem = function(productId){
-  const items = this.cart.items.filter(it=> it.productID.toString()!==productId);
-  //console.log('__________',items);
-  this.cart.items = items;
-  return this.save();
-}
-userSchema.methods.addOrder = function(){
-return this.populate('cart.items.productID').then(user => {
-  return user.cart.items.map(i => {
-    return{quantily: i.quantily, product: {...i.productID._doc }}
-})
-}).then(products => {
-  const order = new Oders({
-    user: {
-      name: this.name,
-      userId: this._id
-    },
-    products: products
-   })
-  return order.save();
-}).then(result =>{
-  return this.deleteCart();
-})
-}
-userSchema.methods.deleteCart = function(){
-  this.cart.items =[];
-  return this.save();
-}
-userSchema.methods.getOrders = function(){
-  const userId = this._id; 
-  return Oders
-          .find({'user.userId':userId})
-            .then(orders => {return orders})
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const  scheduleToday= scheduleUser.time.filter(t => t.timeStart>=today);
+    let gioLam =0;
+    for(let i = 0;i<scheduleToday.length;i++){
+      gioLam= scheduleToday[i].timeEnd-scheduleToday[i].timeStart+gioLam;
+    }
+    gioLam = gioLam/60/60/1000;
+    gioLam = gioLam.toFixed(2);
+    scheduleToday.gioLam =gioLam;
+    return scheduleToday
+  })
+
 }
 module.exports =  mongoose.model('Users',userSchema);
 

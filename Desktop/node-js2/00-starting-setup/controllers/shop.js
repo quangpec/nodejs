@@ -15,18 +15,9 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  // Product.findAll({ where: { id: prodId } })
-  //   .then(products => {
-  //     res.render('shop/product-detail', {
-  //       product: products[0],
-  //       pageTitle: products[0].title,
-  //       path: '/products'
-  //     });
-  //   })
-  //   .catch(err => console.log(err));
-  Product.find({'_id':prodId}) // findById(prodId)
+  Product.find({'_id':prodId}) // trả về 1 array có thể dùng findById(prodId)
     .then(products => {
-      const product = products[0];
+      const product = products[0]; // findById thì trả về 1 object 
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.title,
@@ -79,7 +70,6 @@ exports.getCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-
   req.user.deleteCartItem(prodId)
     .then(result => {
       res.redirect('/cart');
@@ -100,7 +90,6 @@ exports.getOrders = (req, res, next) => {
   req.user
     .getOrders()
     .then(orders => {
-      console.log('...........',orders);
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
