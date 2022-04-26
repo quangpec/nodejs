@@ -1,0 +1,40 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <div class="container" style="text-align: center;">
+                    <div class="row">
+                        <div class="col col-12 col-md-8 col-lg-6" style="margin: auto; text-align: left;">
+                            <p class="lead">Số ngày phép khả dụng: <b style="color:red;">
+                                    <%=user.annualLeave%>
+                                </b> (ngày)</p>
+                            <%if(user.annualLeave===0){%>
+                                <p class="lead">Đã sử dụng hết ngày phép, không thể đăng kí nghỉ phép</p>
+                                <%} else{%>
+                                    <p class="lead"> ĐĂNG KÍ NGHỈ PHÉP</p>
+                                    <form action="/dangki-nghiphep" method="POST">
+                                        <div class="form-group lead">
+                                            <label for="date">Ngày nghỉ</label>
+                                            <input type="date" class="form-control" name="date">
+                                        </div>
+                                        <div class="form-group lead">
+                                            <label for="reason">Lý do</label>
+                                            <input type="text" class="form-control" name="reason"
+                                                placeholder="lý do nghỉ phép">
+                                        </div>
+                                        <div class="form-group lead">
+                                            <label for="time">Giờ nghỉ</label>
+                                            <input type="text" class="form-control" name="time">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary lead">Đăng kí</button>
+                                    </form>
+                        </div>
+                        <%}%>
+
+                    </div>
+                </div>
+            </main>
+            <%- include('../includes/end.ejs') %>
