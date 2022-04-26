@@ -17,11 +17,17 @@ const scheduleSchema = new Schema({
             type: Date,
         }
     }],
-    nghiPhep:[
-        {
-            type:Date
-        }
-    ]
+    nghiPhep:[{
+         date: {
+             type: Date,
+         },
+         time:{
+            type:Number,
+         },
+         reaSon:{
+             type: String,
+         }
+        }]
 
 })
   

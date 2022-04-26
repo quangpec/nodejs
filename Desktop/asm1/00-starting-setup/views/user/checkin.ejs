@@ -16,12 +16,14 @@
                                         <%=user.name%>
                                     </h5>
                                     <p class="lead">Đang làm việc <span style="color: blue;"><%=user.status%></span> </p>
-                                    <% if(user.status===false){%>
+                                    <% if(user.status===false && scheduleToday!==null){%>
                                         <p class="lead"> Số giờ đã làm hôm nay: <span style="color: rgb(255, 5, 5);"><%=scheduleToday.gioLam%></span> (giờ) </p>
-                                    <%}else{%>
+                                    <%}else if(user.status===true){%>
                                         <p>Nơi làm việc: <%=scheduleToday[scheduleToday.length-1].workPlace %></p> 
                                         <p>Giờ bắt đầu: <%=scheduleToday[scheduleToday.length-1].timeStart.toLocaleString() %></p> 
-                                        <%}%>
+                                        <%}else if(user.status===false&& scheduleToday===null){%>
+                                            <p class="lead"> Số giờ đã làm hôm nay: <span style="color: rgb(255, 5, 5);">0</span> (giờ) </p>
+                                            <%}%>
                                 </div>
                         </div>
                         <div class="col col-12 col-md-8 col-lg-9" style="text-align: left;">
@@ -56,7 +58,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for ( let i=0;i<scheduleToday.length;i++) { %>
+                                        <% if(scheduleToday!==null){
+                                            for ( let i=0;i<scheduleToday.length;i++) { %>
                                             <tr>
                                                 <th scope="row" class="lead"style="font-size: 1rem;">
                                                     <%=i+1%>
@@ -76,7 +79,7 @@
                                                     <%=scheduleToday[i].workPlace%>
                                                 </td>
                                             </tr>
-                                            <%} %>
+                                            <%}}%>
                                     </tbody>
                                 </table>
 

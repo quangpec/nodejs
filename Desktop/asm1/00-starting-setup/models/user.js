@@ -125,6 +125,7 @@ return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
 })
 }
 userSchema.methods.getCheckin = function(){
+  let gioLam =0;
  return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
     if(scheduleUser ===null){
       return null;
@@ -132,7 +133,6 @@ userSchema.methods.getCheckin = function(){
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const  scheduleToday= scheduleUser.time.filter(t => t.timeStart>=today);
-    let gioLam =0;
     for(let i = 0;i<scheduleToday.length;i++){
       gioLam= scheduleToday[i].timeEnd-scheduleToday[i].timeStart+gioLam;
     }
@@ -140,6 +140,135 @@ userSchema.methods.getCheckin = function(){
     gioLam = gioLam.toFixed(2);
     scheduleToday.gioLam =gioLam;
     return scheduleToday
+  })
+}
+userSchema.methods.dangkiNghiphep = function(date,time,reaSon){
+  return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+    if (scheduleUser===null){
+      scheduleUser = new Schedule({
+        userId: this._id,
+        time: [],
+        nghiPhep: [],
+      })
+    }
+    const nghiPhep = scheduleUser.nghiPhep;
+    nghiPhep.push({
+      time: time,
+      date: new Date(date),
+      reason:reaSon
+    })
+    scheduleUser.nghiPhep = nghiPhep;
+    scheduleUser.save();
+    this.annualLeave = this.annualLeave-time/8;
+    return this.save();
+})
+  }
+
+userSchema.methods.postDate = function(date){
+  return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+    if(scheduleUser ===null){
+      return null;
+    }
+    const day = new Date(date);
+    const dayStart = new Date(date);
+    let dayEnd = day.setTime(day.getTime() + 86400000);
+    dayEnd = new Date(dayEnd);
+    let gioLam = 0;
+    let giolamThem = 0;
+    const  scheduleDate= scheduleUser.time.filter(t => t.timeStart>=dayStart && t.timeStart<dayEnd);
+    const  annualLeavedate= scheduleUser.nghiPhep.filter(p => p.date.valueOf()===dayStart.valueOf());
+    // console.log('++++++++',scheduleUser.nghiPhep[1].date.valueOf());
+    let annualLeave =0;
+    for( let i =0; i<annualLeavedate.length;i++){
+      annualLeave = annualLeave+annualLeavedate[i].time;
+    }
+
+    for( let i =0; i<scheduleDate.length;i++){
+      gioLam = gioLam+ scheduleDate[i].timeEnd.valueOf() - scheduleDate[i].timeStart.valueOf();
+    }
+    gioLam = gioLam/60/60/1000;
+    //gioLam = gioLam.toFixed(2);
+    if(gioLam>8){
+      giolamThem = gioLam-8;
+    }
+    scheduleDate.schedule=scheduleDate;
+    const tongGio = annualLeave+gioLam;
+    scheduleDate.tongGio = tongGio;
+    scheduleDate.giolamThem = giolamThem;
+    scheduleDate.gioLam = gioLam;
+    scheduleDate.annualLeave= annualLeave;
+    scheduleDate.date = dayStart;
+
+    return scheduleDate
+})
+}
+userSchema.methods.postMonth = function(month){
+  
+  return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+    if(scheduleUser ===null){
+      return null;
+    }
+    const year = month.split('-')[0];
+    const thang = month.split('-')[1];
+    const date = new Date(Number(year), Number(thang)-1,2);
+    const  scheduleDate= scheduleUser.time.filter(t => t.timeStart.getFullYear()===date.getFullYear() &&  t.timeStart.getMonth()===date.getMonth());
+    if (scheduleDate.length===0){
+      return null
+    }
+    const minDate = scheduleDate[0].timeStart.getDate();
+    const maxDate = scheduleDate[scheduleDate.length-1].timeStart.getDate();
+    let index =0;
+    let dateWork =[];
+    for( let i= minDate; i<=maxDate;i++){
+      dateWork[index] = scheduleDate.filter(t => t.timeStart.getDate() ===i);
+      index = index+1;
+    }
+    let gioLam =[];
+    for( let i= 0; i<dateWork.length;i++){
+        gioLam[i]=0;
+        for(let j = 0;j<dateWork[i].length;j++){
+          gioLam[i]= gioLam[i] + dateWork[i][j].timeEnd.valueOf() - dateWork[i][j].timeStart.valueOf();
+        }
+        gioLam[i] = gioLam[i]/60/60/1000;
+    }
+
+    for( let i= 0; i<dateWork.length;i++){
+    const dateNotime = new Date( Date.UTC(dateWork[i][0].timeStart.getFullYear(),dateWork[i][0].timeStart.getMonth(),dateWork[i][0].timeStart.getDate(),0,0,0));
+    console.log('___________________',dateNotime);
+     const annualLeavedate = scheduleUser.nghiPhep.filter(p => p.date.valueOf()===dateNotime.valueOf());
+     console.log(annualLeavedate);
+     let annualLeave =0;
+    for( let j =0; j<annualLeavedate.length;j++){
+      annualLeave = annualLeave+annualLeavedate[j].time;
+    }
+    gioLam[i] = gioLam[i]+annualLeave;
+    }
+    console.log(gioLam);
+    let gioLamthem =[];
+    let gioLamthieu =[];
+    for ( let i = 0 ; i<gioLam.length;i++){
+      gioLamthem[i] =0;
+      gioLamthieu[i]=0;
+      if (gioLam[i]>8){
+        gioLamthem[i] = gioLam[i] -8;
+      }
+      if (gioLam[i]<8){
+        gioLamthieu[i] = 8-gioLam[i];
+      }
+    }
+    let tongGiolamThem = 0;
+    let tonggiolamThieu = 0;
+    for(let i =0;i<gioLam.length;i++){
+     tongGiolamThem =tongGiolamThem + gioLamthem[i];
+    tonggiolamThieu = tonggiolamThieu+gioLamthieu[i];
+    }
+    let luong = this.salaryScale*3000000+(tongGiolamThem-tonggiolamThieu)* 200000;
+    console.log(luong);
+    const salaryUser =[];
+    salaryUser.luong = luong;
+    salaryUser.overTime =tongGiolamThem;
+    salaryUser.tonggiolamThieu = tonggiolamThieu;
+    return salaryUser;
   })
 
 }

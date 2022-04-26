@@ -1,0 +1,80 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <%console.log(scheduleDate)%>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col col-12 col-md-8 col-lg-6" style="margin: auto; text-align: left;">
+                                <form action="/date-detail" method="POST">
+                                    <div class="form-group lead">
+                                        <label for="date">Ngày xem chi tiết</label>
+                                        <input type="date" class="form-control" name="date">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary lead">Xem</button>
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col col-12 col-md-12 col-lg-12" style="margin: auto;">
+                                <% if(scheduleDate !==null){%>
+                                    <div style="text-align:left;">
+                                        <p>Ngày: <%= scheduleDate.date.toLocaleString().split(',')[0] %>
+                                        </p>
+                                        <p>Tống số giờ làm: <%=scheduleDate.gioLam.toFixed(2)%>
+                                        </p>
+                                        <p>Giờ làm thêm:<%=scheduleDate.giolamThem.toFixed(2)%>
+                                        </p>
+                                        <p>annualLeave: <%=scheduleDate.annualLeave%>
+                                        </p>
+                                        <p>tổng số giờ làm theo ngày: <%=scheduleDate.tongGio.toFixed(2)%>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="lead">#</th>
+                                                    <th scope="col" class="lead">Giờ bắt đầu</th>
+                                                    <th scope="col" class="lead">Giờ kết thúc</th>
+                                                    <th scope="col" class="lead">Nơi làm Việc</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <%for ( let i=0;i<scheduleDate.schedule.length;i++) { %>
+                                                    <tr>
+                                                        <th scope="row" class="lead"style="font-size: 1rem;">
+                                                            <%=i+1%>
+                                                        </th>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <%=scheduleDate.schedule[i].timeStart.toLocaleString().split(',')[1]%>
+                                                        </td>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <% if(scheduleDate.schedule[i].timeEnd!==null){%>
+        
+                                                            <%=scheduleDate.schedule[i].timeEnd.toLocaleString().split(',')[1]%>
+                                                            <%} else{ %>
+                                                                Chưa kết thúc
+                                                            <%}%>
+                                                        </td>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <%=scheduleDate.schedule[i].workPlace%>
+                                                        </td>
+                                                    </tr>
+                                                    <%}%>
+                                            </tbody>
+                                        </table>
+        
+                                    </div>
+                                    <%} else{%>
+                                        <p style="text-align: center;">Không tìm thấy dữ liệu</p>
+                                        <%}%>
+                            </div>
+                        </div>
+                    </div>
+            </main>
+
+            <%- include('../includes/end.ejs') %>

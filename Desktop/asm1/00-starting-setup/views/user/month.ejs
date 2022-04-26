@@ -1,0 +1,44 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                
+                    <div class="container">
+                        <div class="row">
+                            <div class="col col-12 col-md-6 col-lg-4" style="margin: auto; text-align: left;">
+                                <form action="/month" method="POST">
+                                    <div class="form-group lead">
+                                        <label for="month">Chọn tháng</label>
+                                        <input type="month" class="form-control" name="month" value=<%=new Date().getFullYear().toString()+"-"+ new Date().getMonth().toString()%>>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary lead">Xem chi tiết</button>
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col col-12 col-md-12 col-lg-12" style="margin: auto;">
+                                <% if(salaryUser !==null){%>
+                                    <div style="text-align:left;">
+                                        <p>Tháng: <%= month.toString().split('-')[1]%>
+                                        </p>
+                                        <p>SalaryScale: <%=salaryScale%>
+                                        </p>
+                                        <p>OverTime:<%=salaryUser.overTime%>
+                                        </p>
+                                        <p>Số giờ làm thiếu: <%=salaryUser.tonggiolamThieu%>
+                                        </p>
+                                        <p>Lương: <%= salaryUser.luong.toFixed(2)%> VNĐ
+                                        </p>
+                                    </div>
+                                    <%} else{%>
+                                        <p style="text-align: center;">Không tìm thấy dữ liệu</p>
+                                        <%}%>
+                            </div>
+                        </div>
+                    </div>
+            </main>
+
+            <%- include('../includes/end.ejs') %></body>

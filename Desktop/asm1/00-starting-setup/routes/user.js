@@ -9,12 +9,18 @@ const router = express.Router();
 router.get('/', userController.getIndex);
 router.get('/covid',userController.getCovid);
 router.get('/checkin',userController.getCheckin);
+router.get('/nghiphep',userController.getNghiphep);
+router.get('/date-detail',userController.getDate);
+router.get('/month',userController.getMonth);
 
 router.post('/avt',userController.postUser);
 router.post('/kbtn',userController.postThannhiet);
 router.post('/duongtinh',userController.postDuongtinh);
 router.post('/muitiem',userController.postMuitiem);
 router.post('/checkin',userController.PostCheckin);
+router.post('/dangki-nghiphep',userController.PostNghiphep)
+router.post('/date-detail',userController.postDate);
+router.post('/month',userController.postMonth);
 
 // router.get('/products', shopController.getProducts);
 
