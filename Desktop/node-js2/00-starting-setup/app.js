@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
+const session = require('express-session');
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
-const session = require('express-session');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
@@ -39,7 +40,8 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://quangla:QebHHAW06xWVA0pC@cluster.ghciv.mongodb.net/shop?retryWrites=true&w=majority'
+    'mongodb+srv://quangla:QebHHAW06xWVA0pC@cluster.ghciv.mongodb.net/shop?retryWrites=true&w=majority',{
+    useNewUrlParser: true,useUnifiedTopology:true }
   )
   .then(result => {
     User.findOne().then(user => {
