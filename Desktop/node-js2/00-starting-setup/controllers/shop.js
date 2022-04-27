@@ -33,6 +33,8 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  console.log(req.user);
+  console.log(req.session.isLoggedIn);
   Product.find()
     .then(products => {
       res.render('shop/index', {
@@ -48,7 +50,9 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  console.log(req.user);
+  if(!req.user){
+    return next();
+  }
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -113,6 +117,9 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
+  if(!req.user){
+    return next();
+  }
   Order.find({ 'user.userId': req.user._id })
     .then(orders => {
       res.render('shop/orders', {
