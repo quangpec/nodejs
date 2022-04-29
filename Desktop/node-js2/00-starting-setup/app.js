@@ -35,7 +35,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  console.log(req.session.user);
+  //console.log(req.session.user);
   if (!req.session.user) {
     return next();
   }
@@ -60,18 +60,6 @@ mongoose
     useNewUrlParser: true,useUnifiedTopology:true }
   )
   .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Max',
-          email: 'max@test.com',
-          cart: {
-            items: []
-          }
-        });
-        user.save();
-      }
-    });
     app.listen(3000);
   })
   .catch(err => {
