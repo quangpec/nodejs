@@ -2,7 +2,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
-  console.log(req.user);
+  //console.log(req.user);
   Product.find()
     .then(products => {
       console.log(products);
@@ -33,8 +33,8 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  console.log(req.user);
-  console.log(req.session.isLoggedIn);
+  // console.log(req.user);
+  // console.log(req.session.isLoggedIn);
   Product.find()
     .then(products => {
       res.render('shop/index', {
@@ -50,8 +50,8 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  if(!req.user){
-    return next();
+  if (!req.session.isLoggedIn) {
+    return res.redirect('/login');
   }
   req.user
     .populate('cart.items.productId')
@@ -117,8 +117,8 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  if(!req.user){
-    return next();
+  if(!req.session.isLoggedIn){
+    return res.redirect('/login');
   }
   Order.find({ 'user.userId': req.user._id })
     .then(orders => {

@@ -1,8 +1,8 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-  if(!req.user){
-    return next();
+  if(!req.session.isLoggedIn){
+    return res.redirect('/login');
   }
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
@@ -84,6 +84,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
+  if(!req.session.isLoggedIn){
+    return res.redirect('/login');
+  }
   Product.find()
     // .select('title price -_id')
     // .populate('userId', 'name')
