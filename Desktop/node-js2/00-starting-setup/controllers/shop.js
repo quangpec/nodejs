@@ -41,7 +41,8 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
+        csrfToken: req.csrfToken()
       });
     })
     .catch(err => {
@@ -117,7 +118,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  if(!req.session.isLoggedIn){
+  if (!req.session.isLoggedIn) {
     return res.redirect('/login');
   }
   Order.find({ 'user.userId': req.user._id })
