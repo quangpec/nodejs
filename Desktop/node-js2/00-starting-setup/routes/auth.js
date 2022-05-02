@@ -1,5 +1,5 @@
 const express = require('express');
-const { check } = require('express-validator/check');
+const { check, body } = require('express-validator/check');
 
 const authController = require('../controllers/auth');
 
@@ -12,7 +12,7 @@ router.get('/signup', authController.getSignup);
 router.post('/login', authController.postLogin);
 
 router.post(
-    '/signup',
+    '/signup',[
     check('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
@@ -23,7 +23,11 @@ router.post(
           else 
             return true
 
-      }),
+      }), 
+      body('password', 'mật khẩu ít nhất 5 kí tự, gồm chữ và số')
+      .isLength({min: 5})
+      .isAlphanumeric()
+    ],
     authController.postSignup
   );
   
