@@ -15,7 +15,15 @@ router.post(
     '/signup',
     check('email')
       .isEmail()
-      .withMessage('Please enter a valid email.'),
+      .withMessage('Please enter a valid email.')
+      .custom((val, {req})=>{
+          if(val === 'abc@123.com'){
+              throw new Error('Email không hợp lệ')
+          }
+          else 
+            return true
+
+      }),
     authController.postSignup
   );
   
