@@ -10,7 +10,20 @@ router.get('/login', authController.getLogin);
 
 router.get('/signup', authController.getSignup);
 
-router.post('/login', authController.postLogin);
+router.post(
+    '/login',
+    [
+      body('email')
+        .isEmail()
+        .withMessage('Please enter a valid email address.')
+        .normalizeEmail(),
+      body('password', 'Password has to be valid.')
+        .isLength({ min: 5 })
+        .isAlphanumeric()
+        .trim()
+    ],
+    authController.postLogin
+  );
 
 router.post(
     '/signup',[
@@ -24,11 +37,13 @@ router.post(
             return Promise.reject('Email đã sử dụng')
           }
       })
-    }), 
+    }).normalizeEmail(), 
       body('password', 'mật khẩu ít nhất 5 kí tự, gồm chữ và số')
       .isLength({min: 5})
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
       body('confirmPassword')
+      .trim()
       .custom((val,{req})=>{
         if(val !== req.body.password){
             throw new Error('Mật khuẩ không trùng khớp')
