@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 //const nodemailer = require('nodemailer');
 //const sendgridTransport = require('nodemailer-sendgrid-transport');
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
@@ -43,9 +43,10 @@ exports.getSignup = (req, res, next) => {
     errorMessage: message,
     oldInput : {
       email: '',
-       password : '',
-        confirmPassword: ''
+      password : '',
+      confirmPassword: ''
       },
+    validationErrors: [],
   });
 };
 
@@ -95,6 +96,7 @@ exports.postSignup = (req, res, next) => {
         password : password,
         confirmPassword: confirmPassword
         },
+        validationErrors: errors.array()
     });
   }
       return bcrypt
