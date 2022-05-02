@@ -47,12 +47,6 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-        req.flash('error', 'Invalid email or password.');
-        return res.redirect('/login');
-      }
       bcrypt
         .compare(password, user.password)
         .then(doMatch => {
@@ -70,9 +64,7 @@ exports.postLogin = (req, res, next) => {
         .catch(err => {
           console.log(err);
           res.redirect('/login');
-        });
-    })
-    .catch(err => console.log(err));
+        })
 };
 
 exports.postSignup = (req, res, next) => {

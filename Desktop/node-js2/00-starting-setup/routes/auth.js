@@ -1,5 +1,6 @@
 const express = require('express');
 const { check, body } = require('express-validator/check');
+const User = require('../models/user');
 
 const authController = require('../controllers/auth');
 
@@ -17,13 +18,13 @@ router.post(
       .isEmail()
       .withMessage('Please enter a valid email.')
       .custom((val, {req})=>{
-          if(val === 'abc@123.com'){
-              throw new Error('Email không hợp lệ')
+        return User.findOne({ email: val })
+        .then(user => {
+          if (user) {
+            return Promise.reject('Email đã sử dụng')
           }
-          else 
-            return true
-
-      }), 
+      })
+    }), 
       body('password', 'mật khẩu ít nhất 5 kí tự, gồm chữ và số')
       .isLength({min: 5})
       .isAlphanumeric(),
