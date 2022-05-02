@@ -26,7 +26,16 @@ router.post(
       }), 
       body('password', 'mật khẩu ít nhất 5 kí tự, gồm chữ và số')
       .isLength({min: 5})
-      .isAlphanumeric()
+      .isAlphanumeric(),
+      body('confirmPassword')
+      .custom((val,{req})=>{
+        if(val !== req.body.password){
+            throw new Error('Mật khuẩ không trùng khớp')
+        }
+        else{
+            return true
+        }
+      })
     ],
     authController.postSignup
   );
