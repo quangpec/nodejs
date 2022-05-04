@@ -39,6 +39,11 @@ app.use(
 );
 app.use(csrfProtection);
 app.use(flash());
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -46,23 +51,16 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then(user => {
-      if(!user){
+      if (!user) {
         return next;
       }
       req.user = user;
       next();
     })
     .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
-});
 
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
+      return next(new Error(err));
+    });
 });
 
 app.use('/admin', adminRoutes);
@@ -71,12 +69,14 @@ app.use(authRoutes);
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 app.use((error, req, res, next) => {
-  // res.status(error.httpStatusCode).render(...);
-  res.redirect('/500');
-});
+  res.status(404).render('500',{
+    pageTitle: 'errors',
+    path: '/500',
+    isAuthenticated: req.session.isLoggedIn
+  })});
 
 mongoose
-  .connect(MONGODB_URI,{useNewUrlParser: true,  useUnifiedTopology: true })
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(result => {
     app.listen(3000);
   })
