@@ -3,9 +3,8 @@ const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 
 exports.getAddProduct = (req, res, next) => {
-  console.log(req.session)
   res.render('admin/edit-product', {
-    pageTitle: 'Add Product',
+    pageTitle: 'Add Product 2',
     path: '/admin/add-product',
     editing: false,
     hasError: false,
@@ -15,15 +14,12 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  console.log('____________________________',req.session.isLoggedIn);
   const title = req.body.title;
-  const imageUrl = req.file;
-  console.log(imageUrl);
+  const imageUrl =  'https://static.remove.bg/remove-bg-web/a8b5118d623a6b3f4b7813a78c686de384352145/assets/start_remove-c851bdf8d3127a24e2d137a55b1b427378cd17385b01aec6e59d5d4b5f39d2ec.png'//req.file;
   const price = req.body.price;
   const description = req.body.description;
   const errors = validationResult(req);
-  console.log(errors);
-  if (!errors.isEmpty()) {
+  if (errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
@@ -38,7 +34,6 @@ exports.postAddProduct = (req, res, next) => {
       },
       validationErrors: errors.array(),
     });
-
   }
   const product = new Product({
     // _id : new mongoose.Types.ObjectId('625a6aee714e5d2a73037c4a'),
@@ -74,6 +69,7 @@ exports.postAddProduct = (req, res, next) => {
       error.httpStatusCode = 500;
       return next(error);
     });
+  
 };
 
 exports.getEditProduct = (req, res, next) => {
