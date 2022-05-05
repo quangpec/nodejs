@@ -32,13 +32,13 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl,
         price: price,
         description: description,
-        validationErrors:  errors.array(),
+        validationErrors: errors.array(),
       }
     });
 
   }
   const product = new Product({
-   // _id : new mongoose.Types.ObjectId('625a6aee714e5d2a73037c4a'),
+    // _id : new mongoose.Types.ObjectId('625a6aee714e5d2a73037c4a'),
     title: title,
     price: price,
     description: description,
@@ -123,7 +123,7 @@ exports.postEditProduct = (req, res, next) => {
         description: updatedDesc,
         _id: req.body.productId,
       },
-      validationErrors:  errors.array(),
+      validationErrors: errors.array(),
     });
 
   }
@@ -148,7 +148,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find({userId: req.user._id})
+  Product.find({ userId: req.user._id })
     // .select('title price -_id')
     // .populate('userId', 'name')
     .then(products => {
