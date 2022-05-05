@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 
 exports.getAddProduct = (req, res, next) => {
+  console.log(req.session)
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -14,6 +15,7 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
+  console.log('____________________________',req.session.isLoggedIn);
   const title = req.body.title;
   const imageUrl = req.file;
   console.log(imageUrl);
@@ -33,8 +35,8 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl,
         price: price,
         description: description,
-        validationErrors: errors.array(),
-      }
+      },
+      validationErrors: errors.array(),
     });
 
   }
