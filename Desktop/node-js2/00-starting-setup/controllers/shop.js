@@ -57,6 +57,7 @@ exports.getCart = (req, res, next) => {
     .execPopulate()
     .then(user => {
       const products = user.cart.items;
+      console.log('____________________', user.cart.items);
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
@@ -161,7 +162,22 @@ exports.getOrderId =(req,res,next)=>{
     res.setHeader('Content-Dispositon', 'inline; filename="'+ orderName + '"');
     pdfDoc.pipe(fs.createWriteStream(orderPath));
     pdfDoc.pipe(res);
-    pdfDoc.text('hello Quang');
+    pdfDoc
+    .fontSize(20)
+    .text('order CODE - '+ orderId ,{underline:true});
+    pdfDoc.text('----------------------------------')
+    let totalCost = 0; 
+     order.products.forEach(prod => {
+      totalCost+= prod.quantity * prod.product.price;
+      pdfDoc
+    .fontSize(14)
+    .text(prod.product.title + ' - ' + prod.quantity + ' x '+ prod.product.price);
+     })
+     pdfDoc
+    .text('---')
+     pdfDoc
+    .fontSize(18)
+    .text('TotalCost: '+ ': '+ totalCost)
     pdfDoc.end();
     // fs.readFile(orderPath,(err,data)=>{
     //   if (err){
