@@ -155,14 +155,16 @@ exports.getOrderId =(req,res,next)=>{
     }
     const orderName = 'order-'+orderId+'.pdf';
     const orderPath = path.join('data','orders',orderName);
-    fs.readFile(orderPath,(err,data)=>{
-      if (err){
-        return next(err);
-      }
-      res.setHeader('Content-Type', 'application/pdf');
-      res.send(data);
-    });
-
-    
+    // fs.readFile(orderPath,(err,data)=>{
+    //   if (err){
+    //     return next(err);
+    //   }
+    //   res.setHeader('Content-Type', 'application/pdf');
+    //   res.send(data);
+    // });
+    const file = fs.createReadStream(orderPath);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Dispositon', 'inline; filename="'+ orderName + '"');
+    file.pipe(res);
   }).catch(err => next(err))
 }
