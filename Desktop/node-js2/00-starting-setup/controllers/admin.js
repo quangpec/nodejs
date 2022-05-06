@@ -5,7 +5,7 @@ const fileHelper = require('../util/file');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
-    pageTitle: 'Add Product 2',
+    pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
     hasError: false,
