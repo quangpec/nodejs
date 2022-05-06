@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const PDFdocument = require('pdfkit');
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -155,6 +156,13 @@ exports.getOrderId =(req,res,next)=>{
     }
     const orderName = 'order-'+orderId+'.pdf';
     const orderPath = path.join('data','orders',orderName);
+    const pdfDoc = new PDFdocument();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Dispositon', 'inline; filename="'+ orderName + '"');
+    pdfDoc.pipe(fs.createWriteStream(orderPath));
+    pdfDoc.pipe(res);
+    pdfDoc.text('hello Quang');
+    pdfDoc.end();
     // fs.readFile(orderPath,(err,data)=>{
     //   if (err){
     //     return next(err);
@@ -162,9 +170,6 @@ exports.getOrderId =(req,res,next)=>{
     //   res.setHeader('Content-Type', 'application/pdf');
     //   res.send(data);
     // });
-    const file = fs.createReadStream(orderPath);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Dispositon', 'inline; filename="'+ orderName + '"');
-    file.pipe(res);
+    
   }).catch(err => next(err))
 }
