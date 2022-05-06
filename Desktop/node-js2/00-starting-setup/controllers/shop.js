@@ -142,16 +142,27 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.getOrderId =(req,res,next)=>{
-  console.log('order');
   const orderId = req.params.orderId;
-  const orderName = 'order-'+orderId+'.pdf';
-  const orderPath = path.join('data','orders',orderName);
-  fs.readFile(orderPath,(err,data)=>{
-    if (err){
-      return next(err);
+  if(!req.user){
+    return res.redirect('/');
+  }
+  Order.findById(orderId).then(order => {
+    if (!order){
+      return next(new Error('Không có thông tin hóa đơn'))
     }
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(data);
-  });
+    if(req.user._id.toString() !==order.user.userId.toString() ){
+      return next(new Error('không có quyền xem'))
+    }
+    const orderName = 'order-'+orderId+'.pdf';
+    const orderPath = path.join('data','orders',orderName);
+    fs.readFile(orderPath,(err,data)=>{
+      if (err){
+        return next(err);
+      }
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(data);
+    });
 
+    
+  }).catch(err => next(err))
 }
