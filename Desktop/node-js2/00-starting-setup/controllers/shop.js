@@ -150,6 +150,7 @@ exports.getOrderId =(req,res,next)=>{
     if (err){
       return next(err);
     }
+    res.setHeader('Content-Type', 'application/pdf');
     res.send(data);
   });
 
