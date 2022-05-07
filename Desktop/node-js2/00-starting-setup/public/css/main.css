@@ -267,6 +267,11 @@ form {
   background: #00695c;
   color: white;
 }
+.pagination a.disabled{
+  background: #a5abaa;
+  color: rgba(210, 208, 208, 0.9);
+  pointer-events: none;
+}
 
 @media (min-width: 768px) {
   .main-header__nav {

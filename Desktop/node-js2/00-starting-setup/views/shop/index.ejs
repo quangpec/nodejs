@@ -30,15 +30,8 @@
                     </article>
                 <% } %>
             </div>
-            <section class="pagination">
-                <% if(previousPage>=1) { %>
-                    <a href="/?page=<%=previousPage%>"> < </a>
-                <%}%>
-                <a href="/?page=<%=page%>" class="active"><%=page%></a>
-                <% if(page<lastPage) { %>
-                    <a href="/?page=<%=nextPage%>"> > </a>
-                <%}%>
-            </section>
+            <%- include('../includes/pagination.ejs', {previousPage:previousPage,page:page,nextPage:nextPage,lastPage:lastPage}) %>
+           
         <% } else { %>
             <h1>No Products Found!</h1>
         <% } %>
