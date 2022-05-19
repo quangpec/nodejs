@@ -2,58 +2,118 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+const flash = require('connect-flash');
+const multer = require('multer');
 
 const errorController = require('./controllers/error');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 
+const MONGODB_URI = 'mongodb+srv://quangla:QebHHAW06xWVA0pC@cluster.ghciv.mongodb.net/asm1?retryWrites=true&w=majority';
 const app = express();
+
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
+const csrfProtection = csrf();
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-//const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter  }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images',express.static(path.join(__dirname, 'images')));
+
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
-  User.findById('625e25073ad72c8e752f34ea')
-    .then(user => {
-      req.user = user;//new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(err => console.log(err));
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
-//app.use('/admin', adminRoutes);
+app.use((req, res, next) => {
+  // throw new Error('Sync Dummy');
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      if (!user) {
+        return next();
+      }
+      req.user = user;
+      next();
+    })
+    .catch(err => {
+      next(new Error(err));
+    });
+});
+
+app.use('/admin',adminRoutes);
 app.use(userRoutes);
+app.use(authRoutes);
+//app.get('/500', errorController.get500);
 
 app.use(errorController.get404);
 
-mongoose.connect(
-  'mongodb+srv://quangla:QebHHAW06xWVA0pC@cluster.ghciv.mongodb.net/asm1?retryWrites=true&w=majority'
-).then(result => {
-  User.findOne()
-    .then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Admin',
-          doB: '01/01/1990',
-          salaryScale: 1.1,
-          startDate:'01/01/2021',
-          department: 'Nhân sự',
-          annualLeave: 12,
-          avatar: 'https://scr.vn/wp-content/uploads/2020/07/Avatar-Facebook-tr%E1%BA%AFng.jpg',
-          status: false,
-        })
-        user.save();
-        return ;
-      }
-      })
-    .catch(err=> console.log(err))})
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render(...);
+  // res.redirect('/500');
+  console.log(error);
+  res.status(500).render('500', {
+    pageTitle: 'Error!',
+    path: '/500',
+    isAuthenticated: req.session.isLoggedIn,
+    admin: req.user.manager.verify||false,
+  });
+});
+
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(result => {
-    app.listen(process.env.PORT || 3000)
-   })
-  .catch(err => console.log(err))
+    app.listen(process.env.PORT || 3001);
+  })
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  });

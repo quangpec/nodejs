@@ -1,0 +1,69 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <% if (errorMessage) { %>
+                    <div class="user-message user-message--error">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+                <h1> Quản lý nhân viên</h1>
+                <form action="./addNhanvien" method="POST" novalidate style="max-width: 300px; margin: auto;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <!-- <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input  type="email" class="form-control" id="email" placeholder="Enter email" value=" //= oldInput.email ">
+            </div> -->
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Email address</label>
+                        <input
+                            class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %> form-control"
+                            type="email" id="exampleFormControlInput1" placeholder="name@example.com" name="email">
+                    </div>
+                    <button type="submit" class="btn btn-primary lead">Thêm nhân viên</button>
+                </form>
+                <div class="container m-1">
+                    <div class="row">
+                        <% users.forEach(user=>{%>
+                            <div class="card col col-3 col-md-3 col-lg-2" style="padding-left: 0px;padding-right: 0px; margin: auto;">
+                                <img class="card-img-top" src="../<%=user.avatar%>" alt=<%=user._id %> style="height: 200px;">
+                                <div class="card-body">
+                                    <h6 class="card-title ">Họ tên: <%=user.name%>
+                                    </h6>
+                                    <p class="card-text ">id : <%=user._id%>
+                                    </p>
+                                    <form action="./<%=user._id%>" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <!-- <div class="form-group row">
+                                            <label for="image">Image</label>
+                                            <input class="form-control-file" type="file" name="image" id="image">
+                                        </div> -->
+                                        <!-- <label for="avatar" class="lead">Link ảnh đại diện</label>
+                      <input name="avatar"> -->
+                                        <button class="btn btn-primary" type="submit" style="width: 100%">Edit</button>
+                                    </form>
+                                    <hr/>
+                                    <form action="./chamCong/<%=user._id%>" method="GET" enctype="multipart/form-data">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <!-- <div class="form-group row">
+                                            <label for="image">Image</label>
+                                            <input class="form-control-file" type="file" name="image" id="image">
+                                        </div> -->
+                                        <!-- <label for="avatar" class="lead">Link ảnh đại diện</label>
+                      <input name="avatar"> -->
+                                        <button class="btn btn-primary" type="submit" style="width: 100%">Giờ làm</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <%})%>
+                    </div>
+                </div>
+
+
+
+            </main>
+
+            <%- include('../includes/end.ejs') %>
+    </body>

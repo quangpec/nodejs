@@ -4,13 +4,13 @@
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
             <li class="main-header__item">
-                <a class="<%= path === '/' ? 'active' : '' %>" href="/">Thông Tin Nhân viên</a>
+                <a class="<%= path === '/' ? 'active' : '' %>" href="/">Profile</a>
             </li>
             <li class="main-header__item">
                 <a class="<%= path === '/checkin' ? 'active' : '' %>" href="/checkin">Điểm Danh</a>
             </li>
             <li class="main-header__item">
-                <a class="<%= path === '/covid' ? 'active' : '' %>" href="/covid">thông tin Covid cá nhân</a>
+                <a class="<%= path === '/covid' ? 'active' : '' %>" href="/covid">Covid</a>
             </li>
             <li class="main-header__item">
                 <a class="<%= path === '/orders' ? 'active' : '' %>" href="/nghiphep">Nghỉ phép</a>
@@ -20,9 +20,32 @@
                 </a>
             </li>
             <li class="main-header__item">
-                <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="month">Bảng lương
+                <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/month">Bảng lương
                 </a>
             </li>
+            <% if(admin){%>
+            <li class="main-header__item">
+                <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/manager"> Quản lý nhân viên
+                </a>
+            </li>
+            <%}%>
+        </ul>
+        <ul class="main-header__item-list">
+            <% if (!isAuthenticated) { %>
+                <li class="main-header__item">
+                    <a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
+                </li>
+                <li class="main-header__item">
+                    <a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a>
+                </li>
+            <% } else { %>
+                <li class="main-header__item">
+                    <form action="/logout" method="post">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+            <% } %>
         </ul>
     </nav>
 </header>
@@ -30,13 +53,13 @@
 <nav class="mobile-nav">
         <ul class="mobile-nav__item-list">
                 <li class="mobile-nav__item">
-                    <a class="<%= path === '/' ? 'active' : '' %>" href="/">Thông Tin Nhân viên</a>
+                    <a class="<%= path === '/' ? 'active' : '' %>" href="/">Profile</a>
                 </li>
                 <li class="mobile-nav__item">
                     <a class="<%= path === '/products' ? 'active' : '' %>" href="/checkin">Điểm Danh</a>
                 </li>
                 <li class="mobile-nav__item">
-                    <a class="<%= path === '/cart' ? 'active' : '' %>" href="/covid">thông tin Covid cá nhân</a>
+                    <a class="<%= path === '/cart' ? 'active' : '' %>" href="/covid">Covid</a>
                 </li>
                 <li class="mobile-nav__item">
                     <a class="<%= path === '/orders' ? 'active' : '' %>" href="/nghiphep">Nghỉ phép</a>
@@ -49,5 +72,26 @@
                     <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/month"> month
                     </a>
                 </li>
+                <%if(admin){%>
+                <li class="mobile-nav__item">
+                    <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/manager"> Quản lý nhân viên
+                    </a>
+                </li>
+                <%}%>
+                <% if (!isAuthenticated) { %>
+                    <li class="mobile-nav__item">
+                        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
+                    </li>
+                    <li class="mobile-nav__item">
+                        <a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a>
+                    </li>
+                <% } else { %>
+                    <li class="mobile-nav__item">
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                <% } %>
             </ul>
 </nav>

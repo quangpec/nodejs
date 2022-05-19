@@ -1,0 +1,15 @@
+<section class="pagination">
+    <!--  -->
+    <form type="submit" method="get">
+        <label for="numLine">Số dòng</label>
+        <input type="hidden" value="<%=page%>" name="page">
+        <select name="numLine" id="numLine" onchange="this.form.submit()">
+            <option <%if(numLine ===1) {%> selected<%}%>>1</option>
+            <option <%if(numLine ===2) {%> selected<%}%>>2</option>
+            <option <%if(numLine ===3) {%> selected<%}%>>3</option>
+        </select>
+        <a href="?page=<%=previousPage%>&numLine=<%=numLine%> " <% if(previousPage<1){ %> class="disabled" <%}%> > < </a>
+        <a href="?page=<%=page%>&numLine=<%=numLine%> " class="active" style="pointer-events: none;"><%=page%></a>
+        <a href="?page=<%=nextPage%>&numLine=<%=numLine%> " <% if(page>=lastPage){ %> class="disabled" <%}%> > > </a>
+    </form>
+</section>

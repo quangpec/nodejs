@@ -1,34 +1,47 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
-</head>
+  <link rel="stylesheet" href="/css/product.css">
+  </head>
 
-<body>
+  <body>
     <%- include('../includes/navigation.ejs') %>
+      <main>
+        <div class="container">
+          <div class="row">
+            <div class="card col col-12 col-md-4 col-lg-4" style="padding-left: 0px;padding-right: 0px;">
+              <img class="card-img-top" src=<%=user.avatar%> alt= <%=user._id %>>
+                <div class="card-body">
+                  <h5 class="card-title lead">Họ tên: <%=user.name%>
+                  </h5>
+                  <p class="card-text">ID : <%=user._id%></p>
+                  <% if(user.quanLyId){%>
+                  <p class="card-text">Quản lý : <%=user.quanLyId.name %>( <%=user.quanLyId._id%>)</p>
+                  <%}%>
+                </div>
+            </div>
+            <div style="margin: 20px;">
+              <p class="card-text lead">Ngày sinh : <%=user.doB.toLocaleString().split(',')[0]%>
+              </p>
+              <p class="card-text lead">Hệ số lương : <%=user.salaryScale%>
+              </p>
+              <p class="card-text lead">Ngày đi làm : <%=user.startDate.toLocaleString().split(',')[0]%>
+              </p>
+              <p class="card-text lead">department : <%=user.department%>
+              </p>
+              <p class="card-text lead">Ngày phép: <%=user.annualLeave%>
+              </p>
+              <form action="/avt" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="form-group row">
+                  <label for="image">Image</label>
+                  <input class="form-control-file" type="file" name="image" id="image">
+                </div>
+                <!-- <label for="avatar" class="lead">Link ảnh đại diện</label>
+                <input name="avatar"> -->
+                <button class="btn btn-primary" type="submit">Save</button>
+              </form>
 
-    <main>
-      <div class="container"> 
-        <div class="row">
-          <div class="card col col-12 col-md-4 col-lg-4" style="padding-left: 0px;padding-right: 0px;">
-            <img class="card-img-top" src=<%=user.avatar%> alt= <%=user._id %>>
-            <div class="card-body">
-              <h5 class="card-title lead">Họ tên: <%=user.name%></h5>
-              <p class="card-text lead">id : <%=user._id%></p>
             </div>
           </div>
-          <div style="margin: 20px;">
-              <p class="card-text lead">Ngày sinh : <%=user.doB.toLocaleString()%></p>
-              <p class="card-text lead">Hệ số lương : <%=user.salaryScale%></p>
-              <p class="card-text lead">Ngày đi làm : <%=user.startDate.toLocaleString()%></p>
-              <p class="card-text lead">department : <%=user.department%></p>
-              <p class="card-text lead">Ngày phép: <%=user.annualLeave%></p>
-              <form  action="/avt" method="POST">
-                <label for="avatar" class="lead">Link ảnh đại diện</label>
-                <input name="avatar">
-                <button  class="btn btn-primary" type="submit">Save</button>
-              </form>
-              
-          </div>
         </div>
-        </div>
-    </main>
-<%- include('../includes/end.ejs') %>
+      </main>
+      <%- include('../includes/end.ejs') %>

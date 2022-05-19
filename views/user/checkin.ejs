@@ -31,6 +31,7 @@
                                 <p class="lead"> Đang trong thời gian làm việc nhấn check out để kết thúc phiên làm việc </p>
                             <%}%>
                             <form action="/checkin" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <div class="form-group" <% if(user.status===true){%> disabled='true' style ="display:none"<%}%>>
                                     <label for="Workplace" class="lead" >Nơi làm việc</label>
                                     <select class="form-control" name="Workplace"  style="max-width:300px;">

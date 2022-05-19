@@ -1,0 +1,38 @@
+<%- include('../includes/head.ejs') %>
+    <!-- <link rel="stylesheet" href="/css/forms.css"> -->
+    <!-- <link rel="stylesheet" href="/css/auth.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <% if (errorMessage) { %>
+                    <div class="user-message user-message--error">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+                        
+                            
+                                <form action="/login" method="POST" novalidate style="max-width: 300px; margin: auto;">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <!-- <div class="form-group">
+                                        <label for="email">E-Mail</label>
+                                        <input  type="email" class="form-control" id="email" placeholder="Enter email" value="<%= oldInput.email %>">
+                                    </div> -->
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">Email address</label>
+                                        <input class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %> form-control" type="email" id="exampleFormControlInput1" placeholder="name@example.com" name="email">
+                                      </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input
+                                            class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %> form-control"
+                                            type="password" name="password" id="password"
+                                            value="<%= oldInput.password %>">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary lead">Login</button>
+                                </form>
+            </main>
+            <%- include('../includes/end.ejs') %>

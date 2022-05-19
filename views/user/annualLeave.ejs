@@ -16,19 +16,21 @@
                                 <%} else{%>
                                     <p class="lead"> ĐĂNG KÍ NGHỈ PHÉP</p>
                                     <form action="/dangki-nghiphep" method="POST">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                         <div class="form-group lead">
                                             <label for="date">Ngày nghỉ</label>
-                                            <input type="date" class="form-control" name="date">
+                                            <% console.log(today)%>
+                                            <input type="date" class="form-control" name="date" value="<%= today%>">
                                         </div>
                                         <div class="form-group lead">
                                             <label for="reason">Lý do</label>
                                             <input type="text" class="form-control" name="reason"
                                                 placeholder="lý do nghỉ phép">
                                         </div>
-                                        <div class="form-group lead">
+                                        <div class="form-group">
                                             <label for="time">Giờ nghỉ</label>
-                                            <input type="text" class="form-control" name="time">
-                                        </div>
+                                            <input type="number" class="form-control" id="time" name="time"  step="0.5" min="1" max="8" value="4">
+                                          </div>
                                         <button type="submit" class="btn btn-primary lead">Đăng kí</button>
                                     </form>
                         </div>

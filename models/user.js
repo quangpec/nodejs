@@ -1,8 +1,17 @@
 const mongoose = require('mongoose');
 const Covid = require('../models/covid');
 const Schedule = require('../models/schedule');
+const fileHelper = require('../util/file');
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
+  email: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required:true
@@ -34,11 +43,31 @@ const userSchema = new Schema({
   status: {
     type: Boolean,
     required: true
-  }
+  },
+  manager:{
+    verify:{
+      type: Boolean,
+      required: true
+    },
+    UserId:[
+      {
+       type: Schema.Types.ObjectId,
+        required: false,
+        ref: 'Users'
+
+      }
+    ]},
+    quanLyId:{
+      type: Schema.Types.ObjectId,
+        required: false,
+        ref: 'Users'
+    }
 })
 userSchema.methods.getCovid = function(product) {
+  const userid = this.manager.UserId;
+  userid.push(this._id);
 return Covid
- .find({'userId':this._id})
+ .find({'userId': {$in: userid}})
  .populate('userId','name avatar')
  .then( covid =>{
    if (covid.length===0)
@@ -53,13 +82,14 @@ return Covid
     return userCovid;
    }
    else{
-     return covid[0];
+     return covid;
     };
    
  })
 }
-userSchema.methods.updateAvt = function(avt){
- this.avatar = avt;
+userSchema.methods.updateAvt = function(image){
+fileHelper.deleteFile(this.avatar);
+ this.avatar = image.path;
  return this.save();
 }
 userSchema.methods.kbtn = function(nhietdo){
@@ -132,13 +162,31 @@ userSchema.methods.getCheckin = function(){
     }
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // if(scheduleUser.time[scheduleUser.time.length-1].timeEnd===null){
+    //   const endDay = scheduleUser.time[scheduleUser.time.length-1].timeStart;
+    //   const endDayDate = new Date(endDay.getFullYear(), endDay.getMonth(), endDay.getDate());
+    //   if(today !== endDayDate){
+    //     this.status=false;
+    //     this.save();
+    //     return null;
+    //   }
+    // }
     const  scheduleToday= scheduleUser.time.filter(t => t.timeStart>=today);
     for(let i = 0;i<scheduleToday.length;i++){
       gioLam= scheduleToday[i].timeEnd-scheduleToday[i].timeStart+gioLam;
     }
     gioLam = gioLam/60/60/1000;
     gioLam = gioLam.toFixed(2);
+    console.log(scheduleToday);
+    // if(scheduleToday.length()===0){
+    //    this.status=false;
+    //    this.save();
+    //    scheduleUser.time[scheduleUser.time.length-1] =[];
+    //    scheduleUser.save();
+    //   return null
+    // }
     scheduleToday.gioLam =gioLam;
+    
     return scheduleToday
   })
 }
@@ -165,7 +213,8 @@ userSchema.methods.dangkiNghiphep = function(date,time,reaSon){
   }
 
 userSchema.methods.postDate = function(date){
-  return Schedule.findOne({'userId':this._id}).then(scheduleUser =>{
+  return Schedule.findOne({'userId':this._id})
+  .then(scheduleUser =>{
     if(scheduleUser ===null){
       return null;
     }
@@ -184,7 +233,9 @@ userSchema.methods.postDate = function(date){
     }
 
     for( let i =0; i<scheduleDate.length;i++){
+      if(scheduleDate[i].timeEnd!==null){
       gioLam = gioLam+ scheduleDate[i].timeEnd.valueOf() - scheduleDate[i].timeStart.valueOf();
+      }
     }
     gioLam = gioLam/60/60/1000;
     //gioLam = gioLam.toFixed(2);
@@ -220,8 +271,11 @@ userSchema.methods.postMonth = function(month){
     let index =0;
     let dateWork =[];
     for( let i= minDate; i<=maxDate;i++){
+      console.log(i,scheduleDate.filter(t => t.timeStart.getDate() ===i));
       dateWork[index] = scheduleDate.filter(t => t.timeStart.getDate() ===i);
-      index = index+1;
+      if(dateWork[index].length !== 0){
+        index = index+1;
+      }
     }
     let gioLam =[];
     for( let i= 0; i<dateWork.length;i++){
@@ -231,7 +285,7 @@ userSchema.methods.postMonth = function(month){
         }
         gioLam[i] = gioLam[i]/60/60/1000;
     }
-
+    console.log('___________________',dateWork);
     for( let i= 0; i<dateWork.length;i++){
     const dateNotime = new Date( Date.UTC(dateWork[i][0].timeStart.getFullYear(),dateWork[i][0].timeStart.getMonth(),dateWork[i][0].timeStart.getDate(),0,0,0));
     console.log('___________________',dateNotime);
@@ -262,7 +316,7 @@ userSchema.methods.postMonth = function(month){
      tongGiolamThem =tongGiolamThem + gioLamthem[i];
     tonggiolamThieu = tonggiolamThieu+gioLamthieu[i];
     }
-    let luong = this.salaryScale*3000000+(tongGiolamThem-tonggiolamThieu)* 200000;
+    let luong = this.salaryScale*3000000+(tongGiolamThem-tonggiolamThieu)* 200000/8;
     console.log(luong);
     const salaryUser =[];
     salaryUser.luong = luong;

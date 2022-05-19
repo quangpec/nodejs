@@ -4,11 +4,14 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
             <main>
-                <%console.log(scheduleDate)%>
+                <%if( quanLy) {%>
+                <p> Quản Lý: <%= quanLy.name%> (<%= quanLy._id%>)</p>
+                <%}%>
                     <div class="container">
                         <div class="row">
                             <div class="col col-12 col-md-8 col-lg-6" style="margin: auto; text-align: left;">
                                 <form action="/date-detail" method="POST">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                     <div class="form-group lead">
                                         <label for="date">Ngày xem chi tiết</label>
                                         <input type="date" class="form-control" name="date">
@@ -70,10 +73,46 @@
         
                                     </div>
                                     <%} else{%>
-                                        <p style="text-align: center;">Không tìm thấy dữ liệu</p>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="lead">#</th>
+                                                    <th scope="col" class="lead">Giờ bắt đầu</th>
+                                                    <th scope="col" class="lead">Giờ kết thúc</th>
+                                                    <th scope="col" class="lead">Nơi làm Việc</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if(schedule!==null){
+                                                    for ( let i=0;i<schedule.length;i++) { %>
+                                                    <tr>
+                                                        <th scope="row" class="lead"style="font-size: 1rem;">
+                                                            <%=i+1+(page-1)*numOfpage%>
+                                                        </th>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <%=schedule[i].timeStart.toLocaleString()%>
+                                                        </td>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <% if(schedule[i].timeEnd!==null){%>
+        
+                                                            <%=schedule[i].timeEnd.toLocaleString()%>
+                                                            <%} else{ %>
+                                                                Chưa kết thúc
+                                                            <%}%>
+                                                        </td>
+                                                        <td class="lead" style="font-size: 1rem;">
+                                                            <%=schedule[i].workPlace%>
+                                                        </td>
+                                                    </tr>
+                                                    <%}}%>
+                                            </tbody>
+                                        </table>
                                         <%}%>
                             </div>
                         </div>
+                        <% if(phantrang){%>
+                        <%-include('../includes/pagination.ejs', {previousPage:previousPage,page:page,nextPage:nextPage,lastPage:lastPage}) %>
+                        <%}%>
                     </div>
             </main>
 

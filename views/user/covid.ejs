@@ -7,7 +7,8 @@
             <main>
                 <div class="container" style="text-align: center;">
                     <div class="row">
-                        <div class="card col col-12 col-md-4 col-lg-3" style="padding-left: 0px;padding-right: 0px; margin-bottom: 5px;">
+                        <div class="card col col-12 col-md-4 col-lg-3"
+                            style="padding-left: 0px;padding-right: 0px; margin-bottom: 5px;">
                             <img class="card-img-top" src=<%=covid.userId.avatar%> alt=
                             <%=covid.userId.name%>>
                                 <div class="card-body">
@@ -28,6 +29,7 @@
                                             </p>
                                             <%}%>
                                                 <form action="/duongtinh" method="POST">
+                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                     <button class="btn btn-primary" type="submit">Cập nhật</button>
                                                 </form>
 
@@ -61,8 +63,11 @@
                             </table>
                             <div class="col col-12 col-md-8 col-lg-6" style="margin: auto; text-align: left;">
                                 <form action="/kbtn" method="POST">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" name="nhietdo" placeholder="nhiệt độ">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <div class="form-group lead">
+                                        <label for="nhietdo"> Khai báo thân nhiệt</label>
+                                        <input type="number" class="form-control" id="nhietdo" name="nhietdo" step="0.1"
+                                            min="20" max="50" value="37">
                                     </div>
                                     <button type="submit" class="btn btn-primary">Khai báo</button>
                                 </form>
@@ -103,6 +108,7 @@
                     </div>
                     <div class="col col-12 col-md-8 col-lg-6" style="margin: auto; text-align: left;">
                         <form action="/muitiem" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <div class="form-group lead">
                                 <label for="time">Ngày tiêm</label>
                                 <input type="datetime-local" class="form-control" name="time">
@@ -117,6 +123,91 @@
                     </div>
 
                 </div>
+                <%if(admin){%>
+                    <div class="container">
+                        <hr style="margin: 20px;"/>
+                        <p class="lead" style="color:#1974cf; text-align: center;">THÔNG TIN COVID CỦA NHÂN VIÊN</p>
+                        <%covidUser.forEach( (covid,index)=>{ 
+                           if(index !==covidUser.length-1){
+                            %>
+                            <h5 class="card-title">
+                                <%=covid.userId.name%> ( <%=covid.userId._id%>)
+                                <a href ="/admin/covid/<%=covid._id%>">Tải xuống (PDF)</a>
+                            </h5>
+                            <% if(covid.duongTinh==='Âm tính' ){%>
+                                <p class="card-text"> Trạng thái :
+                                    <span style="color: rgb(10, 243, 99);">
+                                        <%=covid.duongTinh%>
+                                    </span>
+                                </p>
+                                <% }else{%>
+                                    <p class="card-text"> Trạng thái :
+                                        <span style="color: rgb(223, 16, 58);">
+                                            <%=covid.duongTinh%>
+                                        </span>
+                                    </p>
+                                    <%}%>
+                                        <p class="lead" style="color:#1974cf;">THÔNG TIN THÂN NHIỆT</p>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="lead">#</th>
+                                                    <th scope="col" class="lead">Thời gian khai báo</th>
+                                                    <th scope="col" class="lead">nhiệt độ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% for ( let i=0;i<covid.thanNhiet.length;i++) { %>
+                                                    <tr>
+                                                        <th scope="row" class="lead">
+                                                            <%=i+1%>
+                                                        </th>
+                                                        <td class="lead">
+                                                            <%=covid.thanNhiet[i].time.toLocaleString()%>
+                                                        </td>
+                                                        <td class="lead">
+                                                            <%=covid.thanNhiet[i].nhietDo%>
+                                                        </td>
+                                                    </tr>
+                                                    <%} %>
+                                            </tbody>
+                                        </table>
+                                        <div class="row">
+                                            <p class="lead" style="color:#1974cf">TIÊM CHỦNG</p>
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" class="lead">#</th>
+                                                        <th scope="col" class="lead">Mũi tiêm</th>
+                                                        <th scope="col" class="lead">Ngày tiêm</th>
+                                                        <th scope="col" class="lead">Loại vaccine</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% for(let i=0; i<covid.vaccine.length; i++ ){ %>
+                                                        <tr>
+                                                            <th scope="row" class="lead">
+                                                                <%=i+1%>
+                                                            </th>
+                                                            <td class="lead">
+                                                                Mũi <%=i+1%>
+                                                            </td>
+                                                            <td class="lead">
+                                                                <%=covid.vaccine[i].ngaytiem.toLocaleString()%>
+                                                            </td>
+                                                            <td class="lead">
+                                                                <%=covid.vaccine[i].loaiVaccine%>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                   
+                    <%}})%>
                 </div>
+                        <%}%>
+
+
             </main>
             <%- include('../includes/end.ejs') %>

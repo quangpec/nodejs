@@ -1,0 +1,51 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <div class="row">
+                    <div class="card col col-12 col-md-4 col-lg-3" style="padding-left: 0px;padding-right: 0px;">
+                        <img class="card-img-top" src="../<%=user.avatar%>" alt=<%=user._id %>>
+                        <div class="card-body">
+                            <h5 class="card-title lead">Họ tên: <%=user.name%>
+                            </h5>
+                            <p class="card-text lead">id : <%=user._id%>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col col-12 col-md-4 col-lg-4">
+                        <form action="./edit-user/<%=user._id%>" method="POST" novalidate style="max-width: 300px; margin: auto;">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <div class="form-group">
+                                <label for="name">Tên</label>
+                                <input
+                                    class="<%= validationErrors.find(e => e.param === 'name') ? 'invalid' : '' %> form-control"
+                                    type="text" id="name" name="name" value="<%=user.name%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="salaryScale">salary Scale</label>
+                                <input
+                                    class="<%= validationErrors.find(e => e.param === 'salaryScale') ? 'invalid' : '' %> form-control"
+                                    type="text" id="salaryScale" name="salaryScale" value="<%=user.salaryScale%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Phòng ban</label>
+                                <input
+                                    class="<%= validationErrors.find(e => e.param === 'department') ? 'invalid' : '' %> form-control"
+                                    type="text" id="department" name="department" value="<%=user.department%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="annualLeave">Ngày phép</label>
+                                <input
+                                    class="<%= validationErrors.find(e => e.param === 'annualLeave') ? 'invalid' : '' %> form-control"
+                                    type="text" id="annualLeave" name="annualLeave" value="<%=user.annualLeave%>">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary lead">Lưu</button>
+                        </form>
+                    </div>
+                </div>
+                            </main>
+
+            <%- include('../includes/end.ejs') %>
